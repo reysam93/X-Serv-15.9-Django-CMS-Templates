@@ -21,14 +21,17 @@ def getContent(resource):
         return ""
 
 def withTemplates(request, resource):
-    template = get_template('index.html')
-    logged = isLogged(request)
-    text = getContent(resource)
-    if text == "":
-        return HttpResponseNotFound("Page not found" + logged)
-    c = Context({'logged': logged, 'text': text})
-    render = template.render(c)
-    return HttpResponse(render)
+    if request.method == 'GET':
+        template = get_template('index.html')
+        logged = isLogged(request)
+        text = getContent(resource)
+        if text == "":
+            return HttpResponseNotFound("Page not found" + logged)
+        c = Context({'logged': logged, 'text': text})
+        render = template.render(c)
+        return HttpResponse(render)
+    else:
+        return HttpResponse(status=403)
 
 def processCmsRequest(request, resource):
     logged = isLogged(request)
